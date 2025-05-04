@@ -17,6 +17,7 @@ namespace BigLobbyMod
         public static MelonPreferences_Category configCategory;
         public static MelonPreferences_Entry<int> maxPlayers;
         public static MelonPreferences_Entry<bool> allowPermaJoin;
+        public static MelonPreferences_Entry<string> lobbyname;
         public override void OnInitializeMelon()
         {
             LoggerInstance.Msg("BIG LOBBY MOD Initialized.");
@@ -24,6 +25,7 @@ namespace BigLobbyMod
             configCategory = MelonPreferences.CreateCategory("BigLobbyMod");
             maxPlayers = configCategory.CreateEntry<int>("MaxPlayers", 32, "Max Players", "Maximum number of players allowed in a lobby");
             allowPermaJoin = configCategory.CreateEntry<bool>("allowPermaJoin", false, "Allow Perma Join", "Make the lobby always joinnable");
+            lobbyname = configCategory.CreateEntry<string>("lobbyname", "${PlayerName}'s Lobby", "Change lobby name", "Change the default lobby name use \"${PlayerName}\" to pickup the player's name");
 
             MelonLogger.Msg($"Config loaded. MaxPlayers = {maxPlayers.Value}");
         }
@@ -116,7 +118,7 @@ namespace BigLobbyMod
             MelonLogger.Msg($"Original name: {name}");
 
             // Force maxPlayers to 32 (or any desired value)
-            name = "[BigLobby] " + name;
+            name = "[BL] " + Core.lobbyname.Value.Replace("${PlayerName}", SteamClient.Name);
             MelonLogger.Msg($"Forced name to: {name}");
         }
     }
@@ -256,7 +258,7 @@ namespace BigLobbyMod
     {
         static void Postfix()
         {
-            if (GameManager.players != null && GameManager.players.Capacity < 32)
+            if (GameManager.players != null && GameManager.players.Capacity < Core.maxPlayers.Value)
             {
                 GameManager.players.Capacity = Core.maxPlayers.Value;
                 MelonLogger.Msg("Forced GameManager.players capacity to 32");
