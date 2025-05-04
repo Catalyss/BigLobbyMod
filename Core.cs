@@ -14,9 +14,18 @@ namespace BigLobbyMod
 
     public class Core : MelonMod
     {
+        public static MelonPreferences_Category configCategory;
+        public static MelonPreferences_Entry<int> maxPlayers;
+        public static MelonPreferences_Entry<bool> allowPermaJoin;
         public override void OnInitializeMelon()
         {
             LoggerInstance.Msg("BIG LOBBY MOD Initialized.");
+            // Create config category and entry
+            configCategory = MelonPreferences.CreateCategory("BigLobbyMod");
+            maxPlayers = configCategory.CreateEntry<int>("MaxPlayers", 32, "Max Players", "Maximum number of players allowed in a lobby");
+            allowPermaJoin = configCategory.CreateEntry<bool>("allowPermaJoin", false, "Allow Perma Join", "Make the lobby always joinnable");
+
+            MelonLogger.Msg($"Config loaded. MaxPlayers = {maxPlayers.Value}");
         }
     }
 
@@ -45,7 +54,7 @@ namespace BigLobbyMod
             MelonLogger.Msg($"Original maxPlayers: {maxPlayers}");
 
             // Force maxPlayers to 32 (or any desired value)
-            maxPlayers = 32;
+            maxPlayers = Core.maxPlayers.Value;
             MelonLogger.Msg($"Forced maxPlayers to: {maxPlayers}");
         }
     }
@@ -55,7 +64,7 @@ namespace BigLobbyMod
     {
         static void Prefix(ref LobbyType eLobbyType, ref int cMaxMembers)
         {
-            cMaxMembers = 32;
+            cMaxMembers = Core.maxPlayers.Value;
             MelonLogger.Msg("CreateLobby patched: max players forced to 32.");
         }
     }
@@ -64,7 +73,7 @@ namespace BigLobbyMod
     {
         static void Prefix(IntPtr self, LobbyType eLobbyType, int cMaxMembers)
         {
-            cMaxMembers = 32;
+            cMaxMembers = Core.maxPlayers.Value;
             MelonLogger.Msg("CreateLobby patched: max players forced to 32.");
         }
     }
@@ -86,7 +95,7 @@ namespace BigLobbyMod
             MelonLogger.Msg($"Original count: {count}");
 
             // Force maxPlayers to 32 (or any desired value)
-            count = 32;
+            count = Core.maxPlayers.Value;
             MelonLogger.Msg($"Forced count to: {count}");
         }
     }
@@ -123,7 +132,7 @@ namespace BigLobbyMod
             MelonLogger.Msg($"Original max members: {cMaxMembers}");
 
             // Force the lobby size to 32
-            cMaxMembers = 32;
+            cMaxMembers = Core.maxPlayers.Value;
 
             // Log the new value to confirm
             MelonLogger.Msg($"Forced max members to {cMaxMembers}");
@@ -139,7 +148,7 @@ namespace BigLobbyMod
             MelonLogger.Msg($"Original max members: {value}");
 
             // Force the lobby size to 32
-            value = 32;
+            value = Core.maxPlayers.Value;
 
             // Log the new value to confirm
             MelonLogger.Msg($"Forced max members to {value}");
@@ -157,7 +166,7 @@ namespace BigLobbyMod
             MelonLogger.Msg($"Original max members: {value}");
 
             // Force the lobby size to 32
-            value = 32;
+            value = Core.maxPlayers.Value;
 
             // Log the new value to confirm
             MelonLogger.Msg($"Forceds to {value}");
@@ -201,25 +210,25 @@ namespace BigLobbyMod
     }
 
     [HarmonyPatch(typeof(Global), "get_LimitPlayerCount")]
-public static class Patch_LimitPlayerCount
-{
-    static bool Prefix(ref bool __result)
+    public static class Patch_LimitPlayerCount
     {
-        __result = false; // Disable player limit
-        return false; // Skip original
+        static bool Prefix(ref bool __result)
+        {
+            __result = false; // Disable player limit
+            return false; // Skip original
+        }
     }
-}
 
 
     [HarmonyPatch(typeof(Global), "set_LimitPlayerCount")]
-public static class Patch_SetLimitPlayerCount
-{
-    static bool Prefix(ref bool value)
+    public static class Patch_SetLimitPlayerCount
     {
-        value = false; // Force disable
-        return true; // Call original with our override
+        static bool Prefix(ref bool value)
+        {
+            value = false; // Force disable
+            return true; // Call original with our override
+        }
     }
-}
 
 
 
@@ -229,9 +238,16 @@ public static class Patch_SetLimitPlayerCount
     {
         static bool Prefix(ref Il2Cpp.GameManager.JoinResult __result)
         {
-            __result = Il2Cpp.GameManager.JoinResult.IsJoinable; // Always return Success
-            MelonLogger.Msg($"GameManager.JoinResult.IsJoinable");
-            return false; // Skip original method
+            if (Core.allowPermaJoin.Value)
+            {
+                __result = Il2Cpp.GameManager.JoinResult.IsJoinable; // Always return Success
+                MelonLogger.Msg($"GameManager.JoinResult.IsJoinable");
+                return false; // Skip original method
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 
@@ -242,7 +258,7 @@ public static class Patch_SetLimitPlayerCount
         {
             if (GameManager.players != null && GameManager.players.Capacity < 32)
             {
-                GameManager.players.Capacity = 32;
+                GameManager.players.Capacity = Core.maxPlayers.Value;
                 MelonLogger.Msg("Forced GameManager.players capacity to 32");
                 MelonLogger.Msg($"Player list count: {GameManager.players.Count}, capacity: {GameManager.players.Capacity}");
 
