@@ -200,6 +200,28 @@ namespace BigLobbyMod
         }
     }
 
+    [HarmonyPatch(typeof(Global), "get_LimitPlayerCount")]
+public static class Patch_LimitPlayerCount
+{
+    static bool Prefix(ref bool __result)
+    {
+        __result = false; // Disable player limit
+        return false; // Skip original
+    }
+}
+
+
+    [HarmonyPatch(typeof(Global), "set_LimitPlayerCount")]
+public static class Patch_SetLimitPlayerCount
+{
+    static bool Prefix(ref bool value)
+    {
+        value = false; // Force disable
+        return true; // Call original with our override
+    }
+}
+
+
 
     // Replace with the correct full type name if needed
     [HarmonyPatch(typeof(Il2Cpp.GameManager), nameof(Il2Cpp.GameManager.IsJoinable))]

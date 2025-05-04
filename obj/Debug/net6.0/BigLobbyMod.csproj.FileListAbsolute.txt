@@ -150,3 +150,4 @@ F:\Java\ML MOD\BigLobbyMod\obj\Debug\net6.0\BigLobbyMod.dll
 F:\Java\ML MOD\BigLobbyMod\obj\Debug\net6.0\refint\BigLobbyMod.dll
 F:\Java\ML MOD\BigLobbyMod\obj\Debug\net6.0\BigLobbyMod.pdb
 F:\Java\ML MOD\BigLobbyMod\obj\Debug\net6.0\ref\BigLobbyMod.dll
+F:\Java\ML MOD\BigLobbyMod\obj\Debug\net6.0\BigLobbyMod.sourcelink.json
