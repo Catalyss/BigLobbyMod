@@ -35,6 +35,8 @@ namespace BigLobbyMod
     {
         public override void OnInitializeMelon()
         {
+            Global.LimitPlayerCount=false;
+            Global._LimitPlayerCount_k__BackingField=false;
             HarmonyInstance.PatchAll();
         }
     }
@@ -52,12 +54,8 @@ namespace BigLobbyMod
         // Prefix method that will run before CreateLobby
         static void Prefix(ref int maxPlayers)
         {
-            // Log the original maxPlayers value for debugging
-            MelonLogger.Msg($"Original maxPlayers: {maxPlayers}");
-
             // Force maxPlayers to 32 (or any desired value)
             maxPlayers = Core.maxPlayers.Value;
-            MelonLogger.Msg($"Forced maxPlayers to: {maxPlayers}");
         }
     }
 
@@ -67,7 +65,6 @@ namespace BigLobbyMod
         static void Prefix(ref LobbyType eLobbyType, ref int cMaxMembers)
         {
             cMaxMembers = Core.maxPlayers.Value;
-            MelonLogger.Msg("CreateLobby patched: max players forced to 32.");
         }
     }
     [HarmonyPatch(typeof(ISteamMatchmaking), "_CreateLobby")]
@@ -76,7 +73,6 @@ namespace BigLobbyMod
         static void Prefix(IntPtr self, LobbyType eLobbyType, int cMaxMembers)
         {
             cMaxMembers = Core.maxPlayers.Value;
-            MelonLogger.Msg("CreateLobby patched: max players forced to 32.");
         }
     }
 
@@ -93,12 +89,8 @@ namespace BigLobbyMod
         // Prefix method that will run before CreateLobby
         static void Prefix(ref int count)
         {
-            // Log the original maxPlayers value for debugging
-            MelonLogger.Msg($"Original count: {count}");
-
             // Force maxPlayers to 32 (or any desired value)
             count = Core.maxPlayers.Value;
-            MelonLogger.Msg($"Forced count to: {count}");
         }
     }
 
@@ -130,14 +122,8 @@ namespace BigLobbyMod
         // This will run before SetLobbyMemberLimit to set the player limit to 32
         static void Prefix(SteamId steamIDLobby, ref int cMaxMembers)
         {
-            // Log the current max member value for debugging
-            MelonLogger.Msg($"Original max members: {cMaxMembers}");
-
             // Force the lobby size to 32
             cMaxMembers = Core.maxPlayers.Value;
-
-            // Log the new value to confirm
-            MelonLogger.Msg($"Forced max members to {cMaxMembers}");
         }
     }
     [HarmonyPatch(typeof(SteamServer), "set_MaxPlayers")]
@@ -146,14 +132,8 @@ namespace BigLobbyMod
         // This will run before set_MaxPlayers to set the player limit to 32
         static void Prefix(ref int value)
         {
-            // Log the current max member value for debugging
-            MelonLogger.Msg($"Original max members: {value}");
-
             // Force the lobby size to 32
             value = Core.maxPlayers.Value;
-
-            // Log the new value to confirm
-            MelonLogger.Msg($"Forced max members to {value}");
         }
     }
 
@@ -164,14 +144,8 @@ namespace BigLobbyMod
         // This will run before set_MaxPlayers to set the player limit to 32
         static void Prefix(ref int value)
         {
-            // Log the current max member value for debugging
-            MelonLogger.Msg($"Original max members: {value}");
-
             // Force the lobby size to 32
             value = Core.maxPlayers.Value;
-
-            // Log the new value to confirm
-            MelonLogger.Msg($"Forceds to {value}");
         }
     }
 
@@ -200,14 +174,8 @@ namespace BigLobbyMod
         // This will run before set_MaxPlayers to set the player limit to 32
         static void Prefix(ref bool b)
         {
-            // Log the current max member value for debugging
-            MelonLogger.Msg($"Original : {b}");
-
             // Force the lobby size to 32
             b = true;
-
-            // Log the new value to confirm
-            MelonLogger.Msg($"Forced to {b}");
         }
     }
 
@@ -240,6 +208,9 @@ namespace BigLobbyMod
     {
         static bool Prefix(ref Il2Cpp.GameManager.JoinResult __result)
         {
+            //Make sure the limit is indeed off
+            Global.LimitPlayerCount=false;
+            Global._LimitPlayerCount_k__BackingField=false;
             if (Core.allowPermaJoin.Value)
             {
                 __result = Il2Cpp.GameManager.JoinResult.IsJoinable; // Always return Success
@@ -261,9 +232,6 @@ namespace BigLobbyMod
             if (GameManager.players != null && GameManager.players.Capacity < Core.maxPlayers.Value)
             {
                 GameManager.players.Capacity = Core.maxPlayers.Value;
-                MelonLogger.Msg("Forced GameManager.players capacity to 32");
-                MelonLogger.Msg($"Player list count: {GameManager.players.Count}, capacity: {GameManager.players.Capacity}");
-
             }
         }
     }

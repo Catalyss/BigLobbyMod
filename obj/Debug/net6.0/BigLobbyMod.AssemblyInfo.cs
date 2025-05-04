@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BigLobbyMod")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d8f7fc96641e99b23f3ebc5718e7a8c2285f06ee")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+07eb9aaa90345f29c17f497662b848ab098b1376")]
 [assembly: System.Reflection.AssemblyProductAttribute("BigLobbyMod")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BigLobbyMod")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
