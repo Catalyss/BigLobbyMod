@@ -19,7 +19,7 @@
 - Compatibility with other mods has not been fully tested.
 
 ## Disclaimer
-Use mods at your own risk. This mod is not affiliated with or endorsed by the developers of Mycopunk.
+Use mods at your own risk. This mod is not affiliated with the developers of Mycopunk.
 
 ---
 
