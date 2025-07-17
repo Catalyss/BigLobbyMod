@@ -1,6 +1,6 @@
-# Mycopunk Demo - BigLobbyMod
+# Mycopunk - BigLobbyMod
 
-**BigLobbyMod** increases the player limit in the [**Mycopunk Demo**](https://store.steampowered.com/app/3581750/Mycopunk_Demo/) lobby to support up to **32 players**.
+**BigLobbyMod** increases the player limit in the [**Mycopunk**](https://store.steampowered.com/app/3247750/Mycopunk/) lobby to support up to **32 players**.
 
 ## Features
 - Expands lobby size from the default limit to **32 players**
@@ -15,7 +15,6 @@
 4. Launch the game and enjoy a larger lobby!
 
 ## Notes
-- This mod is made for the **Mycopunk Demo** and may not work on future or different versions.
 - Compatibility with other mods has not been fully tested.
 
 ## Disclaimer
